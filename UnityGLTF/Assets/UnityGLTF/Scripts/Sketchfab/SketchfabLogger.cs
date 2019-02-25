@@ -7,8 +7,9 @@ using SimpleJSON;
 
 namespace Sketchfab
 {
-	class SketchfabProfile
+	public class SketchfabProfile
 	{
+		public string username;
 		public string displayName;
 		public string accountLabel;
 		public int maxUploadSize;
@@ -16,8 +17,9 @@ namespace Sketchfab
 		public bool hasAvatar = false;
 		public int _userCanPrivate = -1; // Can protect model = 1  // Cannot = 0
 
-		public SketchfabProfile(string usr, string planLb)
+		public SketchfabProfile(string usrName, string usr, string planLb)
 		{
+			username = "waleguene";
 			displayName = usr;
 			switch (planLb)
 			{
@@ -89,6 +91,11 @@ namespace Sketchfab
 		public bool isUserLogged()
 		{
 			return _isUserLogged;
+		}
+
+		public SketchfabProfile getCurrentSession()
+		{
+			return _current;
 		}
 
 		public void showLoginUi()
@@ -296,7 +303,7 @@ namespace Sketchfab
 		private void handleUserData(string response)
 		{
 			JSONNode userData = Utils.JSONParse(response);
-			_current = new SketchfabProfile(userData["displayName"], userData["account"]);
+			_current = new SketchfabProfile(userData["username"], userData["displayName"], userData["account"]);
 			requestAvatar(getAvatarUrl(userData));
 			_isUserLogged = true;
 			_hasCheckedSession = true;

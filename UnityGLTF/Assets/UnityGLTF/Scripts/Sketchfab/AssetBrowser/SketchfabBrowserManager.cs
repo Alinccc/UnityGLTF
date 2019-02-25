@@ -255,7 +255,7 @@ namespace Sketchfab
 			startSearch();
 		}
 
-		public void search(string query, bool staffpicked, bool animated, string categoryName, SORT_BY sortby, string maxFaceCount = "", string minFaceCount = "")
+		public void search(string query, bool staffpicked, bool animated, string categoryName, SORT_BY sortby, string maxFaceCount = "", string minFaceCount = "", bool myModels=false)
 		{
 			reset();
 			string searchQuery = START_QUERY;
@@ -299,6 +299,9 @@ namespace Sketchfab
 			if (_categories[categoryName].Length > 0)
 				searchQuery = searchQuery + "&categories=" + _categories[categoryName];
 
+
+			if(myModels)
+				searchQuery = searchQuery + "&user=" + SketchfabPlugin.getLogger().getCurrentSession().username;
 			_lastQuery = searchQuery;
 			startSearch();
 			_isFetching = true;

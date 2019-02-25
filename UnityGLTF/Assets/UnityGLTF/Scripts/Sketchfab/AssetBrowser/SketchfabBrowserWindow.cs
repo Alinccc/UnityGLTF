@@ -162,7 +162,7 @@ namespace Sketchfab
 					break;
 			}
 
-			_browserManager.search(_query, _staffpicked, _animated, _categoryName, sort, _maxFaceCount, _minFaceCount);
+			_browserManager.search(_query, _staffpicked, _animated, _categoryName, sort, _maxFaceCount, _minFaceCount, _myModels);
 			framesSinceLastSearch = 0.0f;
 		}
 
@@ -249,6 +249,11 @@ namespace Sketchfab
 			previous = _staffpicked;
 			_staffpicked = GUILayout.Toggle(_staffpicked, "StaffPicked");
 			if (_staffpicked != previous)
+				triggerSearch();
+
+			previous = _myModels;
+			_myModels = GUILayout.Toggle(_myModels, "My Models");
+			if (_myModels != previous)
 				triggerSearch();
 		}
 
