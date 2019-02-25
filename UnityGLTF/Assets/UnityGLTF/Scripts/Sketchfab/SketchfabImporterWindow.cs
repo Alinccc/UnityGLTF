@@ -18,6 +18,8 @@ namespace Sketchfab
 		{
 			SketchfabImporterWindow window = (SketchfabImporterWindow)EditorWindow.GetWindow(typeof(SketchfabImporterWindow));
 			window.titleContent.text = "Importer";
+			window.titleContent.image = Resources.Load<Texture>("icon");
+			window.titleContent.image.filterMode = FilterMode.Bilinear;
 			window.Show(true);
 		}
 

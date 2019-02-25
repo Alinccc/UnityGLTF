@@ -18,7 +18,9 @@ namespace Sketchfab
 		static void Init()
 		{
 			SketchfabBrowser window = (SketchfabBrowser)EditorWindow.GetWindow(typeof(SketchfabBrowser));
-			window.titleContent.text = "AssetBrowser";
+			window.titleContent.image = Resources.Load<Texture>("icon");
+			window.titleContent.image.filterMode = FilterMode.Bilinear;
+			window.titleContent.text = "Browse";
 			window.Show();
 		}
 
@@ -356,7 +358,7 @@ namespace Sketchfab
 		void displayResult(SketchfabModel model)
 		{
 			GUILayout.BeginVertical();
-			if (GUILayout.Button(new GUIContent(model._thumbnail as Texture2D), GUILayout.MaxHeight(_thumbnailSize), GUILayout.MaxWidth(_thumbnailSize)))
+			if (GUILayout.Button(new GUIContent(model._thumbnail as Texture2D), GUI.skin.label, GUILayout.MaxHeight(_thumbnailSize), GUILayout.MaxWidth(_thumbnailSize)))
 			{
 				_currentUid = model.uid;
 				_browserManager.fetchModelInfo(_currentUid);

@@ -21,6 +21,8 @@ namespace Sketchfab
 		static void Init()
 		{
 			SketchfabExporter window = (SketchfabExporter)EditorWindow.GetWindow(typeof(SketchfabExporter));
+			window.titleContent.image = Resources.Load<Texture>("icon");
+			window.titleContent.image.filterMode = FilterMode.Bilinear;
 			window.titleContent.text = "Exporter";
 			window.Show();
 		}
