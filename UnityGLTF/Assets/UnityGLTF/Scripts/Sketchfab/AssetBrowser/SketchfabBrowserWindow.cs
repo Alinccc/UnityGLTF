@@ -49,6 +49,7 @@ namespace Sketchfab
 		bool _animated = false;
 		bool _staffpicked = true;
 		string _categoryName = "";
+		bool _myModels = false;
 
 		float framesSinceLastSearch = 0.0f;
 		float nbFrameSearchCooldown = 30.0f;
