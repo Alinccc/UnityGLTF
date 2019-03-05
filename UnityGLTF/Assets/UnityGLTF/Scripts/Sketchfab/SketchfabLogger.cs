@@ -16,28 +16,33 @@ namespace Sketchfab
 		public Texture2D avatar = SketchfabPlugin.DEFAULT_AVATAR;
 		public bool hasAvatar = false;
 		public int _userCanPrivate = -1; // Can protect model = 1  // Cannot = 0
+		public Texture2D planIcon;
 
 		public SketchfabProfile(string usrName, string usr, string planLb)
 		{
-			username = "waleguene";
+			username = usrName;
 			displayName = usr;
 			switch (planLb)
 			{
 				case "pro":
 					maxUploadSize = 200 * 1024 * 1024;
 					accountLabel = "PRO";
+					planIcon = SketchfabUI.getPlanIcon(planLb);
 					break;
 				case "prem":
 					maxUploadSize = 500 * 1024 * 1024;
 					accountLabel = "PREMIUM";
+					planIcon = SketchfabUI.getPlanIcon(planLb);
 					break;
 				case "biz":
 					maxUploadSize = 500 * 1024 * 1024;
 					accountLabel = "BUSINESS";
+					planIcon = SketchfabUI.getPlanIcon(planLb);
 					break;
 				case "ent":
 					maxUploadSize = 500 * 1024 * 1024;
 					accountLabel = "ENTERPRISE";
+					planIcon = SketchfabUI.getPlanIcon(planLb);
 					break;
 				default:
 					maxUploadSize = 50 * 1024 * 1024;
@@ -93,6 +98,11 @@ namespace Sketchfab
 			return _isUserLogged;
 		}
 
+		public bool canAccessOwnModels()
+		{
+			return !isUserBasic();
+		}
+
 		public SketchfabProfile getCurrentSession()
 		{
 			return _current;
@@ -132,8 +142,13 @@ namespace Sketchfab
 				GUILayout.BeginHorizontal();
 				GUILayout.Label(_current.avatar);
 				GUILayout.BeginVertical();
-				GUILayout.Label("User: " + _current.displayName);
-				GUILayout.Label("Plan: " + _current.accountLabel);
+
+				GUILayout.BeginHorizontal();
+				GUILayout.Label("" + _current.displayName);
+				if (_current.planIcon)
+					GUILayout.Label(_current.planIcon, GUILayout.Height(18));
+				GUILayout.EndHorizontal();
+
 				if (GUILayout.Button("Logout"))
 				{
 					logout();

@@ -15,11 +15,17 @@ namespace Sketchfab
 
 		// UI Elements
 		public static Color SKFB_RED = new Color(0.8f, 0.0f, 0.0f);
-		public static Color SKFB_BLUE = new Color(69 / 255.0f, 185 / 255.0f, 223 / 255.0f);
+		public static Color SKFB_BLUE = new Color(28 / 255.0f, 170 / 255.0f, 223 / 255.0f);
+		public static Color SKFB_BLUE_2 = new Color(69 / 255.0f, 185 / 255.0f, 223 / 255.0f);
 		public static string CLICKABLE_COLOR = "navy";
 		public static string ERROR_COLOR = "red";
 		public static Texture2D HEADER;
 		public static Texture2D DEFAULT_AVATAR;
+
+		public static Texture2D proPlanIcon;
+		public static Texture2D premPlanIcon;
+		public static Texture2D bizPlanIcon;
+		public static Texture2D entPlanIcon;
 
 		Font OSBold;
 		Font OSLight;
@@ -46,14 +52,43 @@ namespace Sketchfab
 		public GUIStyle SketchfabButton;
 		public GUIStyle SketchfabLabel;
 
+		public Texture SKETCHFAB_ICON;
+		public GUIStyle SketchfabBigButton;
+
 		public SketchfabUI()
 		{
 			Initialize();
 			_isInitialized = true;
 		}
 
+		public static Texture2D getPlanIcon(string planLb)
+		{
+			switch (planLb)
+			{
+				case "pro":
+					if (!proPlanIcon)
+						proPlanIcon = Resources.Load<Texture2D>("planPro");
+					return proPlanIcon;
+				case "prem":
+					if (!premPlanIcon)
+						premPlanIcon = Resources.Load<Texture2D>("planPrem");
+					return premPlanIcon;
+				case "biz":
+					if (!bizPlanIcon)
+						bizPlanIcon = Resources.Load<Texture2D>("planBiz");
+					return bizPlanIcon;
+				case "ent":
+					if (!entPlanIcon)
+						entPlanIcon = Resources.Load<Texture2D>("planEnt");
+					return entPlanIcon;
+				default:
+					return null;
+			}
+		}
+
 		private void Initialize()
 		{
+			SKETCHFAB_ICON = Resources.Load<Texture>("icon");
 			//basic
 			basic = new GUIStyle();
 			basic.fontStyle = FontStyle.BoldAndItalic;
@@ -123,6 +158,12 @@ namespace Sketchfab
 			SketchfabButton.font = OSSemiBold;
 			SketchfabButton.fontSize = 11;
 			SketchfabButton.fixedHeight = 24;
+
+			SketchfabBigButton = new GUIStyle(GUI.skin.button);
+			SketchfabBigButton.font = TitiliumRegular;
+			SketchfabBigButton.fontSize = 20;
+			SketchfabBigButton.richText = true;
+
 
 			SketchfabLabel = new GUIStyle(EditorStyles.miniLabel);
 			SketchfabLabel.richText = true;

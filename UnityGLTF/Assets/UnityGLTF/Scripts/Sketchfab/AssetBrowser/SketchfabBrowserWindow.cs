@@ -64,7 +64,7 @@ namespace Sketchfab
 			if (_browserManager == null)
 			{
 				_browserManager = new SketchfabBrowserManager(OnRefreshUpdate, true);
-				_staffpicked = true;
+				resetFilters();
 				_currentUid = "";
 				_categoryName = "";
 				_categoriesNames = new string[0];
@@ -72,7 +72,6 @@ namespace Sketchfab
 				// Setup sortBy
 				_sortBy = new string[] { "Relevance", "Likes", "Views", "Recent" };
 				_polyCount = new string[] { "Any", "Up to 10k", "10k to 50k", "50k to 100k", "100k to 250k", "250k +" };
-				_sortByIndex = 3;
 				this.Repaint();
 				GL.sRGBWrite = true;
 			}
@@ -187,6 +186,30 @@ namespace Sketchfab
 			SketchfabPlugin.displayFooter();
 		}
 
+		void resetFilters()
+		{
+			_categoryIndex = 0;
+			_sortByIndex = 3;
+			_polyCountIndex = 0;
+
+			_query = "";
+			_animated = false;
+			_staffpicked = true;
+			_categoryName = "All";
+		}
+
+		void resetFilersOwnModels()
+		{
+			_categoryIndex = 0;
+			_sortByIndex = 3;
+			_polyCountIndex = 0;
+
+			_query = "";
+			_animated = false;
+			_staffpicked = false;
+			_categoryName = "All";
+		}
+
 		void displaySearchOptions()
 		{
 			// Query
@@ -207,7 +230,7 @@ namespace Sketchfab
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Search:", GUILayout.Width(80));
 			GUI.SetNextControlName("SearchTextField");
-			_query = GUILayout.TextField(_query);
+			_query = EditorGUILayout.TextField(_query, GUILayout.Width(350));
 
 			if(Event.current.keyCode == KeyCode.Return && GUI.GetNameOfFocusedControl() == "SearchTextField")
 			{
@@ -218,6 +241,25 @@ namespace Sketchfab
 			{
 				triggerSearch();
 			}
+
+			GUILayout.FlexibleSpace();
+			bool previous = _myModels;
+			GUIContent content = new GUIContent("My Models", SketchfabUI.getPlanIcon("Pro"));
+			_myModels = GUILayout.Toggle(_myModels, content, GUILayout.Height(18));
+			if (_myModels != previous)
+			{
+				if(_myModels)
+				{
+					resetFilersOwnModels();
+				}
+				else
+				{
+					resetFilters();
+				}
+				
+				triggerSearch();
+			}
+				
 			GUILayout.EndHorizontal();
 		}
 
@@ -250,11 +292,6 @@ namespace Sketchfab
 			previous = _staffpicked;
 			_staffpicked = GUILayout.Toggle(_staffpicked, "StaffPicked");
 			if (_staffpicked != previous)
-				triggerSearch();
-
-			previous = _myModels;
-			_myModels = GUILayout.Toggle(_myModels, "My Models");
-			if (_myModels != previous)
 				triggerSearch();
 		}
 
@@ -301,13 +338,59 @@ namespace Sketchfab
 			GUILayout.EndHorizontal();
 		}
 
+		void displayUpgradeToPro()
+		{
+			GUILayout.BeginVertical();
+			GUILayout.FlexibleSpace();
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Label("You need to give us some money to download your own model $$");
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			Color old = GUI.color;
+			GUI.color = SketchfabUI.SKFB_BLUE;
+			string buttonCaption = "<color=" + Color.white + "><b>Upgrade to PRO</b></color>";
+			if (GUILayout.Button(buttonCaption, _ui.SketchfabBigButton, GUILayout.Height(64), GUILayout.Width(450)))
+			{
+				Application.OpenURL(SketchfabPlugin.Urls.plans);
+			}
+			GUI.color = old;
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+		}
+
+		void displayCenteredMessage(string message)
+		{
+			GUILayout.BeginVertical();
+			GUILayout.FlexibleSpace();
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Label(message);
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+		}
+
 		void displayResults()
 		{
 			int count = 0;
 			int buttonLineLength = Mathf.Max(1, Mathf.Min((int)this.position.width / _thumbnailSize, 6));
 			bool needClose = false;
 			List<SketchfabModel> models = _browserManager.getResults();
-			if (models.Count > 0) // Replace by "is ready"
+
+			if(_myModels)
+			{
+				if (_logger.isUserLogged() && !_logger.canAccessOwnModels())
+				{
+					displayUpgradeToPro();
+				}
+			}
+			else if (models.Count > 0) // Replace by "is ready"
 			{
 				foreach (SketchfabModel model in models)
 				{
@@ -324,7 +407,7 @@ namespace Sketchfab
 					if (count % buttonLineLength == buttonLineLength - 1)
 					{
 						GUILayout.EndHorizontal();
-						GUILayout.FlexibleSpace();
+						//GUILayout.FlexibleSpace();
 						needClose = false;
 					}
 
@@ -333,28 +416,9 @@ namespace Sketchfab
 			}
 			else if (_browserManager._isFetching)
 			{
-				GUILayout.BeginVertical();
-				GUILayout.FlexibleSpace();
-				GUILayout.BeginHorizontal();
-				GUILayout.FlexibleSpace();
-				GUILayout.Label("Fetching models ....");
-				GUILayout.FlexibleSpace();
-				GUILayout.EndHorizontal();
-				GUILayout.FlexibleSpace();
-				GUILayout.EndHorizontal();
+				displayCenteredMessage("Fetching models ....");
 			}
-			else
-			{
-				GUILayout.BeginVertical();
-				GUILayout.FlexibleSpace();
-				GUILayout.BeginHorizontal();
-				GUILayout.FlexibleSpace();
-				GUILayout.Label("No results found.");
-				GUILayout.FlexibleSpace();
-				GUILayout.EndHorizontal();
-				GUILayout.FlexibleSpace();
-				GUILayout.EndHorizontal();
-			}
+
 			if (needClose)
 			{
 				GUILayout.EndHorizontal();

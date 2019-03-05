@@ -65,14 +65,15 @@ namespace Sketchfab
 				GUILayout.BeginVertical();
 				_ui.displayModelName(model.name);
 				_ui.displayContent("by " + model.author);
-				GUILayout.EndVertical();
-
-				GUILayout.FlexibleSpace();
-				if (GUILayout.Button("View on Sketchfab"))
+				GUILayout.BeginHorizontal();
+				GUIContent viewSkfb = new GUIContent("View on Sketchfab", _ui.SKETCHFAB_ICON);
+				if (GUILayout.Button(viewSkfb, GUILayout.Height(24), GUILayout.Width(140)))
 				{
 					Application.OpenURL(SketchfabPlugin.Urls.modelUrl + "/" + _currentModel.uid);
 				}
-
+				GUILayout.FlexibleSpace();
+				GUILayout.EndHorizontal();
+				GUILayout.EndVertical();
 				GUILayout.EndHorizontal();
 
 
@@ -164,6 +165,7 @@ namespace Sketchfab
 			Color old = GUI.color;
 			GUI.color = SketchfabUI.SKFB_BLUE;
 			GUI.contentColor = Color.white;
+			GUILayout.FlexibleSpace();
 			string buttonCaption = "";
 			if (!_window._logger.isUserLogged())
 			{
@@ -172,11 +174,13 @@ namespace Sketchfab
 			}
 			else
 			{
-				buttonCaption = "Download model (" + Utils.humanifyFileSize(_currentModel.archiveSize) + ")";
+				buttonCaption = "<b>Download model</b> (" + Utils.humanifyFileSize(_currentModel.archiveSize) + ")";
 			}
-			if (GUILayout.Button(buttonCaption))
-			{
 
+			buttonCaption = "<color=" + Color.white + ">" + buttonCaption + "</color>";
+
+			if (GUILayout.Button(buttonCaption, _ui.SketchfabBigButton, GUILayout.Height(64), GUILayout.Width(450)))
+			{
 				if (!assetAlreadyExists() || EditorUtility.DisplayDialog("Override asset", "The asset " + _prefabName + " already exists in project. Do you want to override it ?", "Override", "Cancel"))
 				{
 					// Reuse if still valid
@@ -190,6 +194,7 @@ namespace Sketchfab
 					}
 				}
 			}
+			GUILayout.FlexibleSpace();
 			GUI.color = old;
 			GUI.enabled = true;
 			GUILayout.EndHorizontal();

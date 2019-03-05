@@ -301,7 +301,18 @@ namespace Sketchfab
 
 
 			if(myModels)
-				searchQuery = searchQuery + "&user=" + SketchfabPlugin.getLogger().getCurrentSession().username;
+			{
+				if (SketchfabPlugin.getLogger().canAccessOwnModels())
+				{
+					searchQuery = searchQuery + "&user=" + SketchfabPlugin.getLogger().getCurrentSession().username;
+				}
+				else
+				{
+					return;
+				}
+			}
+
+				
 			_lastQuery = searchQuery;
 			startSearch();
 			_isFetching = true;
@@ -310,7 +321,7 @@ namespace Sketchfab
 		void startSearch(string cursor = "")
 		{
 			_hasFetchedPreviews = false;
-			SketchfabRequest request = new SketchfabRequest(SketchfabPlugin.Urls.searchEndpoint + _lastQuery + cursor);
+			SketchfabRequest request = new SketchfabRequest(SketchfabPlugin.Urls.searchEndpoint + _lastQuery + cursor, SketchfabPlugin.getLogger().getHeader());
 			request.setCallback(handleSearch);
 			_api.registerRequest(request);
 		}
