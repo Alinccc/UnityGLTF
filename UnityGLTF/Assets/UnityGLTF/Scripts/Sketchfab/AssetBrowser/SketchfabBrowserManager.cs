@@ -122,7 +122,7 @@ namespace Sketchfab
 		UnityGLTF.GLTFEditorImporter.ProgressCallback _importProgress;
 		UnityGLTF.GLTFEditorImporter.RefreshWindow _importFinish;
 
-		public SketchfabBrowserManager(UpdateCallback refresh = null, bool initialSearch = false)
+		public SketchfabBrowserManager(UpdateCallback refresh = null, bool initialSearch = true)
 		{
 			_defaultThumbnail = Resources.Load<Texture2D>("defaultModel");
 			checkValidity();
@@ -245,7 +245,7 @@ namespace Sketchfab
 		//Search
 		public void startInitialSearch()
 		{
-			_lastQuery = INITIAL_SEARCH;
+			_lastQuery = SketchfabPlugin.Urls.searchEndpoint + INITIAL_SEARCH;
 			startSearch();
 		}
 
@@ -258,7 +258,7 @@ namespace Sketchfab
 		public void search(string query, bool staffpicked, bool animated, string categoryName, SORT_BY sortby, string maxFaceCount = "", string minFaceCount = "", bool myModels=false)
 		{
 			reset();
-			string searchQuery = START_QUERY;
+			string searchQuery = (myModels ? SketchfabPlugin.Urls.ownModelsSearchEndpoint : SketchfabPlugin.Urls.searchEndpoint) + START_QUERY;
 			if (query.Length > 0)
 			{
 				searchQuery = searchQuery + "q=" + query;
@@ -300,19 +300,18 @@ namespace Sketchfab
 				searchQuery = searchQuery + "&categories=" + _categories[categoryName];
 
 
-			if(myModels)
-			{
-				if (SketchfabPlugin.getLogger().canAccessOwnModels())
-				{
-					searchQuery = searchQuery + "&user=" + SketchfabPlugin.getLogger().getCurrentSession().username;
-				}
-				else
-				{
-					return;
-				}
-			}
+			//if(myModels)
+			//{
+			//	if (SketchfabPlugin.getLogger().canAccessOwnModels())
+			//	{
+			//		searchQuery = searchQuery + "&user=" + SketchfabPlugin.getLogger().getCurrentSession().username;
+			//	}
+			//	else
+			//	{
+			//		return;
+			//	}
+			//}
 
-				
 			_lastQuery = searchQuery;
 			startSearch();
 			_isFetching = true;
@@ -321,7 +320,7 @@ namespace Sketchfab
 		void startSearch(string cursor = "")
 		{
 			_hasFetchedPreviews = false;
-			SketchfabRequest request = new SketchfabRequest(SketchfabPlugin.Urls.searchEndpoint + _lastQuery + cursor, SketchfabPlugin.getLogger().getHeader());
+			SketchfabRequest request = new SketchfabRequest(_lastQuery + cursor, SketchfabPlugin.getLogger().getHeader());
 			request.setCallback(handleSearch);
 			_api.registerRequest(request);
 		}

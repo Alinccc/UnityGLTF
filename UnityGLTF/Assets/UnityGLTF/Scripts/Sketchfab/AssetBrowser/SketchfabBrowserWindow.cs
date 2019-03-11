@@ -244,7 +244,7 @@ namespace Sketchfab
 
 			GUILayout.FlexibleSpace();
 			bool previous = _myModels;
-			GUIContent content = new GUIContent("My Models", SketchfabUI.getPlanIcon("Pro"));
+			GUIContent content = new GUIContent("My Models", SketchfabUI.getPlanIcon("pro"));
 			_myModels = GUILayout.Toggle(_myModels, content, GUILayout.Height(18));
 			if (_myModels != previous)
 			{
@@ -344,7 +344,7 @@ namespace Sketchfab
 			GUILayout.FlexibleSpace();
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("You need to give us some money to download your own model $$");
+			GUILayout.Label("Upgrade to PRO to gain full API access to your personal library of 3D models");
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal();
@@ -352,7 +352,7 @@ namespace Sketchfab
 			Color old = GUI.color;
 			GUI.color = SketchfabUI.SKFB_BLUE;
 			string buttonCaption = "<color=" + Color.white + "><b>Upgrade to PRO</b></color>";
-			if (GUILayout.Button(buttonCaption, _ui.SketchfabBigButton, GUILayout.Height(64), GUILayout.Width(450)))
+			if (GUILayout.Button(buttonCaption, _ui.getSketchfabBigButton(), GUILayout.Height(64), GUILayout.Width(450)))
 			{
 				Application.OpenURL(SketchfabPlugin.Urls.plans);
 			}
@@ -436,8 +436,8 @@ namespace Sketchfab
 					_skfbWin.Focus();
 			}
 			GUILayout.BeginVertical(GUILayout.Width(_thumbnailSize), GUILayout.Height(50));
-			GUILayout.Label(model.name, _ui.sketchfabMiniModelname);
-			GUILayout.Label("by " + model.author, _ui.sketchfabMiniAuthorname);
+			GUILayout.Label(model.name, _ui.getSketchfabMiniModelName());
+			GUILayout.Label("by " + model.author, _ui.getSketchfabMiniAuthorName());
 			GUILayout.EndVertical();
 			GUILayout.EndVertical();
 		}

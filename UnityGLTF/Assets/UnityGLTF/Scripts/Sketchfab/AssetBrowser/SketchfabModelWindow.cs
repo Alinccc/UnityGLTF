@@ -179,7 +179,7 @@ namespace Sketchfab
 
 			buttonCaption = "<color=" + Color.white + ">" + buttonCaption + "</color>";
 
-			if (GUILayout.Button(buttonCaption, _ui.SketchfabBigButton, GUILayout.Height(64), GUILayout.Width(450)))
+			if (GUILayout.Button(buttonCaption, _ui.getSketchfabBigButton(), GUILayout.Height(64), GUILayout.Width(450)))
 			{
 				if (!assetAlreadyExists() || EditorUtility.DisplayDialog("Override asset", "The asset " + _prefabName + " already exists in project. Do you want to override it ?", "Override", "Cancel"))
 				{
